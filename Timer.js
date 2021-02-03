@@ -53,8 +53,9 @@ function design(){
             stroke(0,130,0);
             break;
     }
-    textAlign(LEFT, CENTER)
-    text(Math.round(solveTijd/10) / 100 + " s",680,100,1530,200);
+    textAlign(RIGHT, CENTER)
+    text(Math.round(solveTijd/10) / 100,350,100,430,200);
+    text("s",400,100,420,200);
 
     fill(0);
     stroke(0);
@@ -137,7 +138,9 @@ function scrambler(){
                 for(j = 0; j < 6; j++){
                     if(movePos % 2 == 0){
                         if(j == movePos || j == movePos + 1){
-                        sameMove[j] = 1;
+                            if(j == movePos){
+                                sameMove[j] = 1;
+                            }
                         }
                          else{
                             sameMove[j] = 0;
@@ -145,18 +148,21 @@ function scrambler(){
                     }
                     if(movePos % 2 == 1){
                         if(j == movePos || j == movePos - 1){
-                        sameMove[j] = 1;
+                            if(j == movePos){
+                                sameMove[j] = 1;
+                            }
                         }
                          else{
                             sameMove[j] = 0;
                              }
                     }
                 }
-
+            
             moveType = Math.floor(Math.random() * 3);
 
             move = moves[3 * movePos + moveType];
 
+            
             scramble += move + "   ";
         }
         timerState = 1;
