@@ -53,9 +53,11 @@ function design(){
             stroke(0,130,0);
             break;
     }
-    textAlign(RIGHT, CENTER)
+    textAlign(RIGHT, CENTER);
     text(Math.round(solveTijd/10) / 100,350,100,430,200);
     text("s",400,100,420,200);
+
+    textAlign(LEFT, CENTER);
 
     fill(0);
     stroke(0);
