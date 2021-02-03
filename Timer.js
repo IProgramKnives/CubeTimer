@@ -61,7 +61,7 @@ function design(){
             break;
     }
     textAlign(RIGHT, CENTER);
-    text(Math.round(solveTijd/10) / 100,350,100,430,200);
+    text((Math.round((solveTijd/1000)*100)/100).toFixed(2),350,100,430,200);
     text("s",400,100,420,200);
 
     textAlign(LEFT, CENTER);
