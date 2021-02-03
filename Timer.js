@@ -9,6 +9,9 @@ var worstTime = 0;
 var movePos = 0;
 var moveType = 0;
 var sameMove = [0,0,0,0,0,0];
+var instructions = [];
+var turnAmount = 1;
+var startco = [0,0];
 var tijdInduwStart = 0;
 var huidigeTijd = 0;
 var wachtTijd = 0;
@@ -22,10 +25,12 @@ function setup(){
 }
 
 function draw(){
-    design();
-    scrambler();
-    timerStart();
-    time();
+     design();
+     scrambler();
+     cubeSim(instructions);
+     drawCube();
+     timerStart();
+     time();
 }
 
 function design(){
@@ -132,7 +137,7 @@ function design(){
 function scrambler(){
     if(timerState == 0){
         scramble = "";
-        for(i = 0; i <= 19; i++){
+        for(i = 0; i < 20; i++){ 
             while(sameMove[movePos] != 0){
                 movePos = Math.floor(Math.random() * 6);
                 }
@@ -159,11 +164,13 @@ function scrambler(){
                              }
                     }
                 }
+                
             
             moveType = Math.floor(Math.random() * 3);
 
             move = moves[3 * movePos + moveType];
-
+            
+            instructions[i] = move; 
             
             scramble += move + "   ";
         }
@@ -171,6 +178,177 @@ function scrambler(){
     }
     
 }
+
+function cubeSim(instr){
+    wm = [[1,1,1],[1,1,1],[1,1,1]]; //wm = white matrix en nwm = new white matrix, 1 lijst is 1 rij en de elementen van de rij geven de kolommen aan
+                                    //dus [1][2] geeft de 2de rij, 3de kolom aan
+    gm = [[2,2,2],[2,2,2],[2,2,2]];
+    bm = [[3,3,3],[3,3,3],[3,3,3]];
+    rm = [[4,4,4],[4,4,4],[4,4,4]];
+    om = [[5,5,5],[5,5,5],[5,5,5]];
+    ym = [[6,6,6],[6,6,6],[6,6,6]];
+
+    for(i = 0; i < 20; i++){  
+        
+        if(instr[i].length == 1){
+            turnAmount = 1;
+        }
+        else if(instr[i][1] == "2"){
+            turnAmount = 2;
+        }
+        else if(instr[i][1] == "'"){
+            turnAmount = 3;
+        }
+            switch(instr[i][0]){
+                case "R":
+                    for(j = 0; j < turnAmount; j++){
+                    //vlakken laten draaien zonder de kleurinfo te verwijderen zodat de draai "tegelijk" gebeurt voor alle kleuren
+                    nwm = [[wm[0][0],wm[0][1],gm[0][2]],[wm[1][0],wm[1][1],gm[1][2]],[wm[2][0],wm[2][1],gm[2][2]]];
+                    ngm = [[gm[0][0],gm[0][1],ym[2][0]],[gm[1][0],gm[1][1],ym[1][0]],[gm[2][0],gm[2][1],ym[0][0]]];
+                    nbm = [[bm[0][0],bm[0][1],wm[0][2]],[bm[1][0],bm[1][1],wm[1][2]],[bm[2][0],bm[2][1],wm[2][2]]];
+                    nym = [[bm[2][2],ym[0][1],ym[0][2]],[bm[1][2],ym[1][1],ym[1][2]],[bm[0][2],ym[2][1],ym[2][2]]];
+                    nrm = [[rm[2][0],rm[1][0],rm[0][0]],[rm[2][1],rm[1][1],rm[0][1]],[rm[2][2],rm[1][2],rm[0][2]]];
+                    
+                    //kleuren overschrijven met hun nieuwe waardes
+                    wm = nwm;
+                    gm = ngm;
+                    bm = nbm;
+                    ym = nym;
+                    rm = nrm;
+                    }
+                    break;
+                case "L":
+                    for(j = 0; j < turnAmount; j++){
+                        nwm = [[bm[0][0],wm[0][1],wm[0][2]],[bm[1][0],wm[1][1],wm[1][2]],[bm[2][0],wm[2][1],wm[2][2]]];
+                        nbm = [[ym[2][2],bm[0][1],bm[0][2]],[ym[1][2],bm[1][1],bm[1][2]],[ym[0][2],bm[2][1],bm[2][2]]];
+                        ngm = [[wm[0][0],gm[0][1],gm[0][2]],[wm[1][0],gm[1][1],gm[1][2]],[wm[2][0],gm[2][1],gm[2][2]]];
+                        nym = [[ym[0][0],ym[0][1],gm[2][0]],[ym[1][0],ym[1][1],gm[1][0]],[ym[2][0],ym[2][1],gm[0][0]]];
+                        nom = [[om[2][0],om[1][0],om[0][0]],[om[2][1],om[1][1],om[0][1]],[om[2][2],om[1][2],om[0][2]]];
+                        
+                        wm = nwm;
+                        gm = ngm;
+                        bm = nbm;
+                        ym = nym;
+                        om = nom;
+                        }
+                        break;
+                case "F":
+                    for(j = 0; j < turnAmount; j++){
+                        nwm = [[wm[0][0],wm[0][1],wm[0][2]],[wm[1][0],wm[1][1],wm[1][2]],[om[2][0],om[2][1],om[2][2]]];
+                        nom = [[om[0][0],om[0][1],om[0][2]],[om[1][0],om[1][1],om[1][2]],[ym[2][0],ym[2][1],ym[2][2]]];
+                        nrm = [[rm[0][0],rm[0][1],rm[0][2]],[rm[1][0],rm[1][1],rm[1][2]],[wm[2][0],wm[2][1],wm[2][2]]];
+                        nym = [[ym[0][0],ym[0][1],ym[0][2]],[ym[1][0],ym[1][1],ym[1][2]],[rm[2][0],rm[2][1],rm[2][2]]];
+                        ngm = [[gm[2][0],gm[1][0],gm[0][0]],[gm[2][1],gm[1][1],gm[0][1]],[gm[2][2],gm[1][2],gm[0][2]]];
+                        
+                        wm = nwm;
+                        om = nom;
+                        rm = nrm;
+                        ym = nym;
+                        gm = ngm;
+                        }
+                        break;
+                case "B":
+                    for(j = 0; j < turnAmount; j++){
+                        nwm = [[rm[0][0],rm[0][1],rm[0][2]],[wm[1][0],wm[1][1],wm[1][2]],[wm[2][0],wm[2][1],wm[2][2]]];
+                        nom = [[wm[0][0],wm[0][1],wm[0][2]],[om[1][0],om[1][1],om[1][2]],[om[2][0],om[2][1],om[2][2]]];
+                        nrm = [[ym[0][0],ym[0][1],ym[0][2]],[rm[1][0],rm[1][1],rm[1][2]],[rm[2][0],rm[2][1],rm[2][2]]];
+                        nym = [[om[0][0],om[0][1],om[0][2]],[ym[1][0],ym[1][1],ym[1][2]],[ym[2][0],ym[2][1],ym[2][2]]];
+                        nbm = [[bm[2][0],bm[1][0],bm[0][0]],[bm[2][1],bm[1][1],bm[0][1]],[bm[2][2],bm[1][2],bm[0][2]]];
+                        
+                        wm = nwm;
+                        om = nom;
+                        rm = nrm;
+                        ym = nym;
+                        bm = nbm;
+                        }
+                        break;
+                case "U":
+                    for(j = 0; j < turnAmount; j++){
+                        ngm = [[rm[2][0],rm[1][0],rm[0][0]],[gm[1][0],gm[1][1],gm[1][2]],[gm[2][0],gm[2][1],gm[2][2]]];
+                        nom = [[om[0][0],om[0][1],gm[0][0]],[om[1][0],om[1][1],gm[0][1]],[om[2][0],om[2][1],gm[0][2]]];
+                        nrm = [[bm[2][0],rm[0][1],rm[0][2]],[bm[2][1],rm[1][1],rm[1][2]],[bm[2][2],rm[2][1],rm[2][2]]];
+                        nbm = [[bm[0][0],bm[0][1],bm[0][2]],[bm[1][0],bm[1][1],bm[1][2]],[om[2][2],om[1][2],om[0][2]]];
+                        nwm = [[wm[2][0],wm[1][0],wm[0][0]],[wm[2][1],wm[1][1],wm[0][1]],[wm[2][2],wm[1][2],wm[0][2]]];
+                        
+                        wm = nwm;
+                        om = nom;
+                        rm = nrm;
+                        bm = nbm;
+                        gm = ngm;
+                        }
+                        break;
+                case "D":
+                    for(j = 0; j < turnAmount; j++){
+                        nbm = [[rm[0][2],rm[1][2],rm[2][2]],[bm[1][0],bm[1][1],bm[1][2]],[bm[2][0],bm[2][1],bm[2][2]]];
+                        nrm = [[rm[0][0],rm[0][1],gm[2][2]],[rm[1][0],rm[1][1],gm[2][1]],[rm[2][0],rm[2][1],gm[2][0]]];
+                        nom = [[bm[0][2],om[0][1],om[0][2]],[bm[0][1],om[1][1],om[1][2]],[bm[0][0],om[2][1],om[2][2]]];
+                        ngm = [[gm[0][0],gm[0][1],gm[0][2]],[gm[1][0],gm[1][1],gm[1][2]],[om[0][0],om[1][0],om[2][0]]];
+                        nym = [[ym[2][0],ym[1][0],ym[0][0]],[ym[2][1],ym[1][1],ym[0][1]],[ym[2][2],ym[1][2],ym[0][2]]];
+                        
+                        ym = nym;
+                        om = nom;
+                        rm = nrm;
+                        bm = nbm;
+                        gm = ngm;
+                        }
+                        break;
+            }
+        
+    }
+}
+function drawCube(){
+    fill(0);
+    stroke(0);
+    rect(800,420,480,120);
+    rect(1040,300,120,360);
+    startco = [800,420];
+    drawCubeFace(ym);
+    startco[0] = 920;
+    drawCubeFace(om);
+    startco[0] = 1040;
+    drawCubeFace(wm);
+    startco[0] = 1160;
+    drawCubeFace(rm);
+    startco = [1040,540];
+    drawCubeFace(gm);
+    startco[1] = 300;
+    drawCubeFace(bm);
+
+   
+    
+}
+function drawCubeFace(matrix){
+    for(i = 0; i < 3; i++){
+        for(j = 0; j < 3; j++){
+            numToCol(matrix[i][j]);
+            rect(startco[0]+(40)*j, startco[1]+(40)*i, 40, 40);
+        }
+    }
+}
+
+function numToCol(matrixEl){
+    switch(matrixEl){
+        case 1:
+            fill(255);
+            break;
+        case 2:
+            fill(0,150,0);
+            break;
+        case 3:
+            fill(0,0,150);
+            break;
+        case 4:
+            fill(150,0,0);
+            break;
+        case 5:
+            fill(240,130,0);
+            break;
+        case 6:
+            fill(255,255,60);
+            break;
+    }
+}
+
 
 function timerStart(){
     if(timerState == 1 && keyIsDown(32) == 1){
