@@ -41,7 +41,9 @@ function design(){
     stroke(0);
     textSize(30);
     textAlign(CENTER, CENTER);
+    if(timerState == 0 || timerState == 1 || timerState == 2 || timerState == 3){
     text(scramble, 0, 50, 1530, 100);
+    }
 
     textSize(60);
     switch(timerState){
