@@ -66,6 +66,11 @@ function design(){
 
     textAlign(LEFT, CENTER);
 
+    fill(250);
+    stroke(0);
+    rect(140,360,400,240);
+    line(140, 390, 540, 390);
+
     fill(0);
     stroke(0);
     textSize(18);
