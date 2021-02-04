@@ -145,9 +145,10 @@ function scrambler(){
     if(timerState == 0){
         scramble = "";
         for(i = 0; i < 20; i++){ 
-            while(sameMove[movePos] != 0){
+            do {
                 movePos = Math.floor(Math.random() * 6);
                 }
+                while(sameMove[movePos] != 0)
 
                 for(j = 0; j < 6; j++){
                     if(movePos % 2 == 0){
